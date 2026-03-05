@@ -17,7 +17,6 @@
             overflow-x: hidden;
         }
 
-        /* Glassmorphism utilities */
         .glass-panel {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(16px);
@@ -35,6 +34,232 @@
 
         .input-glass:focus {
             background: rgba(0, 0, 0, 0.4);
+            border-color: #60a5fa;
+            outline: none;
+            box-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
+        }
+        
+        select option {
+            background-color: #1e293b;
+            color: white;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-in forwards;
+        }
+
+        .slide-up {
+            animation: slideUp 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #60a5fa; 
+        }
+    </style>
+</head>
+<body class="antialiased relative flex flex-col justify-between">
+
+    <div class="fixed top-[-10%] left-[-10%] w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-30 pointer-events-none"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-30 pointer-events-none"></div>
+
+    <!-- 1. PORTAL INTRO SCREEN -->
+    <div id="intro-screen" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#0a0f1d] transition-opacity duration-500">
+        <div class="text-center slide-up px-4">
+            <h3 class="text-blue-400 font-medium tracking-widest text-sm uppercase mb-2">Sechenov University</h3>
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 tracking-tight">Student Council Portal</h1>
+            <p class="text-gray-400 max-w-md mx-auto mb-10 text-lg">Official gateway for Student Council Media Department recruitment.</p>
+            
+            <button id="enter-portal-btn" type="button" class="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full font-bold text-white text-lg transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(59,130,246,0.5)] cursor-pointer relative overflow-hidden">
+                <span class="pointer-events-none">Enter Portal <i class="fa-solid fa-arrow-right ml-2"></i></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. SUCCESS SCREEN -->
+    <div id="success-screen" style="display: none;" class="flex-grow flex-col items-center justify-center p-6 fade-in z-40 relative">
+        <div class="glass-panel p-10 rounded-2xl text-center max-w-lg w-full mt-20">
+            <div class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 text-green-400 text-3xl shadow-[0_0_15px_rgba(34,197,94,0.2)]">
+                <i class="fa-solid fa-check-double"></i>
+            </div>
+            <h2 class="text-2xl font-bold mb-4">Application Received Successfully!</h2>
+            <p class="text-gray-300 mb-6">Thank you for applying to the Media Department. We will review your profile and contact you via Telegram soon.</p>
+        </div>
+    </div>
+
+    <!-- 3. ALREADY SUBMITTED SCREEN -->
+    <div id="already-submitted-screen" style="display: none;" class="flex-grow flex-col items-center justify-center p-6 fade-in z-40 relative">
+        <div class="glass-panel p-10 rounded-2xl text-center max-w-lg w-full mt-20 border border-blue-500/20">
+            <div class="w-20 h-20 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-6 text-blue-400 text-3xl shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+                <i class="fa-solid fa-user-check"></i>
+            </div>
+            <h2 class="text-2xl font-bold mb-4 text-white">Application Already Submitted</h2>
+            <p class="text-gray-300 mb-6">You have already submitted your application to the Media Department. Multiple submissions are not allowed.</p>
+            <div class="inline-block px-5 py-3 bg-white/5 rounded-xl border border-white/10 text-sm text-gray-400">
+                <i class="fa-solid fa-circle-info mr-2 text-blue-400"></i> We will contact you soon via Telegram.
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. MAIN FORM SCREEN -->
+    <main id="main-form-screen" style="display: none;" class="flex-grow container mx-auto px-4 py-12 relative z-10 max-w-4xl fade-in">
+        <div class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">Media Department</h1>
+        </div>
+
+        <form id="recruitment-form" class="glass-panel rounded-3xl p-6 md:p-10 shadow-2xl">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Full Name -->
+                <div class="col-span-1 md:col-span-2 space-y-2">
+                    <label for="fullName" class="block text-sm font-medium text-gray-300">Full Name (in Russian / ФИО) *</label>
+                    <input type="text" id="fullName" name="fullName" required placeholder="Иванов Иван Иванович" class="input-glass w-full rounded-xl py-3 px-4 focus:ring-2 focus:ring-blue-500">
+                </div>
+                <!-- Telegram -->
+                <div class="space-y-2">
+                    <label for="telegram" class="block text-sm font-medium text-gray-300">Telegram Username *</label>
+                    <input type="text" id="telegram" name="telegram" required placeholder="@username" class="input-glass w-full rounded-xl py-3 px-4">
+                </div>
+                <!-- Phone -->
+                <div class="space-y-2">
+                    <label for="phone" class="block text-sm font-medium text-gray-300">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" required placeholder="+7 (999) 000-00-00" class="input-glass w-full rounded-xl py-3 px-4">
+                </div>
+                <!-- Major -->
+                <div class="space-y-2">
+                    <label for="major" class="block text-sm font-medium text-gray-300">Academic Major *</label>
+                    <select id="major" name="major" required class="input-glass w-full rounded-xl py-3 px-4">
+                        <option value="" disabled selected>Select major</option>
+                        <option value="General Medicine">General Medicine</option>
+                        <option value="Dentistry">Dentistry</option>
+                        <option value="Pharmacy">Pharmacy</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <!-- Course -->
+                <div class="space-y-2">
+                    <label for="course" class="block text-sm font-medium text-gray-300">Course / Year *</label>
+                    <select id="course" name="course" required class="input-glass w-full rounded-xl py-3 px-4">
+                        <option value="" disabled selected>Select course</option>
+                        <option value="1st Year">1st Year</option>
+                        <option value="2nd Year">2nd Year</option>
+                        <option value="3rd Year">3rd Year</option>
+                        <option value="4th Year">4th Year</option>
+                        <option value="5th Year">5th Year</option>
+                        <option value="6th Year">6th Year</option>
+                    </select>
+                </div>
+                <!-- Roles -->
+                <div class="col-span-1 md:col-span-2 space-y-3 mt-4">
+                    <label class="block text-sm font-medium text-gray-300">Interested Roles? *</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <label class="flex items-center p-4 border border-gray-600 rounded-xl cursor-pointer hover:bg-white/5">
+                            <input type="checkbox" name="role_copywriting" value="Copywriting" class="w-5 h-5">
+                            <span class="ml-3">Copywriting</span>
+                        </label>
+                        <label class="flex items-center p-4 border border-gray-600 rounded-xl cursor-pointer hover:bg-white/5">
+                            <input type="checkbox" name="role_presentation" value="Presentation" class="w-5 h-5">
+                            <span class="ml-3">Presentation Design</span>
+                        </label>
+                    </div>
+                </div>
+                <!-- Motivation -->
+                <div class="col-span-1 md:col-span-2 space-y-2 mt-4">
+                    <label for="motivation" class="block text-sm font-medium text-gray-300">Motivation / Experience *</label>
+                    <textarea id="motivation" name="motivation" rows="4" required class="input-glass w-full rounded-xl py-3 px-4 resize-none"></textarea>
+                </div>
+            </div>
+
+            <div class="mt-10 flex flex-col items-center">
+                <button type="submit" id="submit-btn" class="w-full md:w-auto min-w-[250px] py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-bold text-white shadow-lg transition-all hover:scale-105 active:scale-95">
+                    Submit Application
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <!-- 5. FOOTER -->
+    <footer id="main-footer" style="display: none;" class="relative z-10 w-full py-6 mt-auto border-t border-white/10 glass-panel">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between text-gray-400 text-sm">
+            <div>&copy; <span id="year"></span> Student Council Media Dept.</div>
+            <div class="flex items-center gap-1">Developed By <span class="text-blue-400 font-bold">AL TAMEEMI YASIR AMMAR</span></div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        const introScreen = document.getElementById('intro-screen');
+        const mainFormScreen = document.getElementById('main-form-screen');
+        const mainFooter = document.getElementById('main-footer');
+        const enterBtn = document.getElementById('enter-portal-btn');
+        const alreadySubmittedScreen = document.getElementById('already-submitted-screen');
+
+        // دالة الدخول المباشرة
+        function startPortal() {
+            introScreen.style.opacity = '0';
+            setTimeout(() => {
+                introScreen.style.display = 'none';
+                mainFormScreen.style.display = 'block';
+                mainFooter.style.display = 'block';
+                window.scrollTo(0, 0);
+            }, 300);
+        }
+
+        // إرفاق الدالة بالزر برمجياً لضمان الاستجابة
+        enterBtn.addEventListener('click', startPortal);
+
+        // التحقق من التقديم المسبق
+        if (localStorage.getItem('media_form_submitted') === 'true') {
+            introScreen.style.display = 'none';
+            alreadySubmittedScreen.style.display = 'flex';
+            mainFooter.style.display = 'block';
+        }
+
+        // نموذج جوجل
+        const form = document.getElementById('recruitment-form');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdsu92rHWD2zt1a4nGorHFHTdBWyvb-QfHSzYo2wMxUSgE-8g/formResponse";
+            const formData = new FormData();
+            formData.append("entry.177804517", document.getElementById('fullName').value);
+            formData.append("entry.1054505032", document.getElementById('telegram').value);
+            formData.append("entry.208791993", document.getElementById('phone').value);
+            formData.append("entry.312388279", document.getElementById('major').value);
+            formData.append("entry.358338066", document.getElementById('course').value);
+            formData.append("entry.1641197630", document.getElementById('motivation').value);
+            
+            try {
+                await fetch(GOOGLE_FORM_URL, { method: 'POST', mode: 'no-cors', body: formData });
+                localStorage.setItem('media_form_submitted', 'true');
+                mainFormScreen.style.display = 'none';
+                document.getElementById('success-screen').style.display = 'flex';
+                window.scrollTo(0, 0);
+            } catch (error) {
+                alert('Connection error. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>            background: rgba(0, 0, 0, 0.4);
             border-color: #60a5fa;
             outline: none;
             box-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
