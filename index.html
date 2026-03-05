@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Department Recruitment | Student Council</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism utilities */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-glass {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .input-glass:focus {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: #60a5fa;
+            outline: none;
+            box-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
+        }
+        
+        /* Select option background fix for dark mode */
+        select option {
+            background-color: #1e293b;
+            color: white;
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.8s ease-in forwards;
+        }
+
+        .slide-up {
+            animation: slideUp 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #60a5fa; 
+        }
+    </style>
+</head>
+<body class="antialiased relative flex flex-col justify-between">
+
+    <!-- Background decorative elements -->
+    <div class="fixed top-[-10%] left-[-10%] w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-30 pointer-events-none"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-30 pointer-events-none"></div>
+
+    <!-- 1. PORTAL INTRO SCREEN -->
+    <div id="intro-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#0a0f1d] transition-opacity duration-500">
+        <div class="text-center slide-up">
+            <h3 class="text-blue-400 font-medium tracking-widest text-sm uppercase mb-2">Sechenov University</h3>
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 tracking-tight">Student Council Portal</h1>
+            <p class="text-gray-400 max-w-md mx-auto mb-10 text-lg">Official gateway for Student Council Media Department recruitment.</p>
+            
+            <!-- زر الدخول المبسط لضمان عمل اللمس في جميع الهواتف -->
+            <button id="enter-portal-btn" type="button" onclick="document.getElementById('intro-screen').style.display='none'; document.getElementById('main-form-screen').style.display='block'; document.getElementById('main-footer').style.display='block'; window.scrollTo(0, 0);" class="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full font-bold text-white text-lg transition-all active:scale-95 shadow-[0_0_20px_rgba(59,130,246,0.5)]">
+                Enter Portal <i class="fa-solid fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. SUCCESS SCREEN (Hidden by default) -->
+    <div id="success-screen" style="display: none;" class="flex-grow flex-col items-center justify-center p-6 fade-in z-40 relative">
+        <div class="glass-panel p-10 rounded-2xl text-center max-w-lg w-full mt-20">
+            <div class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 text-green-400 text-3xl">
+                <i class="fa-solid fa-check-double"></i>
+            </div>
+            <h2 class="text-2xl font-bold mb-4">Application Received Successfully!</h2>
+            <p class="text-gray-300 mb-6">Thank you for applying to the Media Department. We will review your profile and contact you via Telegram soon.</p>
+        </div>
+    </div>
+
+    <!-- 3. MAIN FORM SCREEN (مخفي في البداية) -->
+    <main id="main-form-screen" style="display: none;" class="flex-grow container mx-auto px-4 py-12 relative z-10 max-w-4xl fade-in">
+        
+        <!-- Header Section -->
+        <div class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">Media Department</h1>
+        </div>
+
+        <!-- The Form -->
+        <form id="recruitment-form" class="glass-panel rounded-3xl p-6 md:p-10 shadow-2xl">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Full Name -->
+                <div class="col-span-1 md:col-span-2 space-y-2">
+                    <label for="fullName" class="block text-sm font-medium text-gray-300">
+                        Full Name <span class="text-blue-400">(in Russian / ФИО)</span> <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-user text-gray-400"></i>
+                        </div>
+                        <input type="text" id="fullName" name="fullName" required placeholder="Иванов Иван Иванович" 
+                            class="input-glass w-full rounded-xl py-3 pl-11 pr-4 focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
+                            oninvalid="this.setCustomValidity('Please enter your full name in Russian')"
+                            oninput="this.setCustomValidity('')">
+                    </div>
+                </div>
+
+                <!-- Telegram Username -->
+                <div class="space-y-2">
+                    <label for="telegram" class="block text-sm font-medium text-gray-300">
+                        Telegram Username <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fa-brands fa-telegram text-gray-400"></i>
+                        </div>
+                        <input type="text" id="telegram" name="telegram" required placeholder="@username" 
+                            class="input-glass w-full rounded-xl py-3 pl-11 pr-4 focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
+                            oninvalid="this.setCustomValidity('Please provide your Telegram username')"
+                            oninput="this.setCustomValidity('')">
+                    </div>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="space-y-2">
+                    <label for="phone" class="block text-sm font-medium text-gray-300">
+                        Phone Number <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-phone text-gray-400"></i>
+                        </div>
+                        <input type="tel" id="phone" name="phone" required placeholder="+7 (999) 000-00-00" 
+                            class="input-glass w-full rounded-xl py-3 pl-11 pr-4 focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
+                            oninvalid="this.setCustomValidity('Please provide your phone number')"
+                            oninput="this.setCustomValidity('')">
+                    </div>
+                </div>
+
+                <!-- Academic Major -->
+                <div class="space-y-2">
+                    <label for="major" class="block text-sm font-medium text-gray-300">
+                        Academic Major <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-graduation-cap text-gray-400"></i>
+                        </div>
+                        <select id="major" name="major" required class="input-glass w-full rounded-xl py-3 pl-11 pr-4 focus:ring-2 focus:ring-blue-500 appearance-none"
+                                oninvalid="this.setCustomValidity('Please select your academic major')"
+                                onchange="this.setCustomValidity('')">
+                            <option value="" disabled selected>Select your major</option>
+                            <option value="General Medicine">General Medicine</option>
+                            <option value="Dentistry">Dentistry</option>
+                            <option value="Pharmacy">Pharmacy</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-chevron-down text-gray-400 text-sm"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course / Year -->
+                <div class="space-y-2">
+                    <label for="course" class="block text-sm font-medium text-gray-300">
+                        Course / Year of Study <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-calendar-alt text-gray-400"></i>
+                        </div>
+                        <select id="course" name="course" required class="input-glass w-full rounded-xl py-3 pl-11 pr-4 focus:ring-2 focus:ring-blue-500 appearance-none"
+                                oninvalid="this.setCustomValidity('Please select your year of study')"
+                                onchange="this.setCustomValidity('')">
+                            <option value="" disabled selected>Select your course</option>
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                            <option value="5th Year">5th Year</option>
+                            <option value="6th Year">6th Year</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-chevron-down text-gray-400 text-sm"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desired Role -->
+                <div class="col-span-1 md:col-span-2 space-y-3 mt-4">
+                    <label class="block text-sm font-medium text-gray-300">
+                        What role are you interested in? (Select at least one) <span class="text-red-500">*</span>
+                    </label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <label class="flex items-center p-4 border border-gray-600 rounded-xl cursor-pointer hover:bg-white/5 transition-colors">
+                            <input type="checkbox" name="role_copywriting" value="Copywriting" class="w-5 h-5 text-blue-600 rounded border-gray-500 bg-gray-700 focus:ring-blue-500">
+                            <span class="ml-3 font-medium">Copywriting (Writing texts)</span>
+                        </label>
+                        <label class="flex items-center p-4 border border-gray-600 rounded-xl cursor-pointer hover:bg-white/5 transition-colors">
+                            <input type="checkbox" name="role_presentation" value="Presentation Design" class="w-5 h-5 text-blue-600 rounded border-gray-500 bg-gray-700 focus:ring-blue-500">
+                            <span class="ml-3 font-medium">Presentation Design (Slides)</span>
+                        </label>
+                    </div>
+                    <p id="role-error" class="text-red-400 text-sm hidden">Please select at least one role to continue.</p>
+                </div>
+
+                <!-- Motivation / Experience -->
+                <div class="col-span-1 md:col-span-2 space-y-2 mt-4">
+                    <label for="motivation" class="block text-sm font-medium text-gray-300">
+                        Do you have any experience? Why do you want to join? <span class="text-red-500">*</span>
+                    </label>
+                    <textarea id="motivation" name="motivation" rows="4" required placeholder="Tell us about your skills, any past experience, or just your passion to learn..." 
+                        class="input-glass w-full rounded-xl py-3 px-4 focus:ring-2 focus:ring-blue-500 placeholder-gray-500 resize-none"
+                        oninvalid="this.setCustomValidity('Please share your motivation or experience')"
+                        oninput="this.setCustomValidity('')"></textarea>
+                </div>
+
+            </div>
+
+            <div class="mt-10 flex flex-col items-center">
+                <button type="submit" id="submit-btn" class="w-full md:w-auto min-w-[250px] relative px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-bold text-white text-lg transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(59,130,246,0.4)] hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] flex justify-center items-center gap-3">
+                    <span id="submit-text">Submit Application</span>
+                    <i id="submit-icon" class="fa-solid fa-paper-plane"></i>
+                    <i id="loading-icon" class="fa-solid fa-spinner fa-spin hidden"></i>
+                </button>
+                <p class="text-gray-400 text-xs mt-4"><i class="fa-solid fa-lock mr-1"></i> Your information will only be used for recruitment purposes.</p>
+            </div>
+        </form>
+    </main>
+
+    <!-- 3. FOOTER -->
+    <footer id="main-footer" style="display: none;" class="relative z-10 w-full py-6 mt-auto border-t border-white/10 glass-panel bg-transparent backdrop-blur-md">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between text-center md:text-left gap-4">
+            <div class="text-gray-400 text-sm font-light">
+                &copy; <span id="year"></span> Student Council Media Department. All rights reserved.
+            </div>
+            <div class="text-sm font-medium tracking-wide flex items-center gap-2 text-gray-300">
+                <span class="text-gray-500">Developed with</span>
+                <i class="fa-solid fa-heart text-red-500 animate-pulse"></i>
+                <span class="text-gray-500">By</span>
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400 font-bold ml-1">AL TAMEEMI YASIR AMMAR</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        const introScreen = document.getElementById('intro-screen');
+        const successScreen = document.getElementById('success-screen');
+        const mainFormScreen = document.getElementById('main-form-screen');
+        const mainFooter = document.getElementById('main-footer');
+        const form = document.getElementById('recruitment-form');
+
+        // Google Forms Integration
+        const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdsu92rHWD2zt1a4nGorHFHTdBWyvb-QfHSzYo2wMxUSgE-8g/formResponse"; 
+        
+        const FORM_ENTRIES = {
+            fullName: "entry.177804517",      
+            telegram: "entry.1054505032",     
+            phone: "entry.208791993",         
+            major: "entry.312388279",         
+            course: "entry.358338066",        
+            roles: "entry.1141514453",        
+            motivation: "entry.1641197630"    
+        };
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Validate Checkboxes
+            const copywritingChecked = document.querySelector('input[name="role_copywriting"]').checked;
+            const presentationChecked = document.querySelector('input[name="role_presentation"]').checked;
+            
+            if (!copywritingChecked && !presentationChecked) {
+                document.getElementById('role-error').classList.remove('hidden');
+                return;
+            } else {
+                document.getElementById('role-error').classList.add('hidden');
+            }
+
+            // UI Loading state
+            const submitBtn = document.getElementById('submit-btn');
+            const submitText = document.getElementById('submit-text');
+            const submitIcon = document.getElementById('submit-icon');
+            const loadingIcon = document.getElementById('loading-icon');
+
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
+            submitText.textContent = 'Sending...';
+            submitIcon.classList.add('hidden');
+            loadingIcon.classList.remove('hidden');
+
+            // Gather Data
+            const formData = new FormData();
+            formData.append(FORM_ENTRIES.fullName, document.getElementById('fullName').value);
+            formData.append(FORM_ENTRIES.telegram, document.getElementById('telegram').value);
+            formData.append(FORM_ENTRIES.phone, document.getElementById('phone').value);
+            formData.append(FORM_ENTRIES.major, document.getElementById('major').value);
+            formData.append(FORM_ENTRIES.course, document.getElementById('course').value);
+            formData.append(FORM_ENTRIES.motivation, document.getElementById('motivation').value);
+            
+            if (copywritingChecked) formData.append(FORM_ENTRIES.roles, 'Copywriting');
+            if (presentationChecked) formData.append(FORM_ENTRIES.roles, 'Presentation Design');
+
+            try {
+                // Submit to Google Forms
+                await fetch(GOOGLE_FORM_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: formData
+                });
+
+                // Show success screen with transition
+                mainFormScreen.style.display = 'none';
+                successScreen.style.display = 'flex';
+                window.scrollTo(0, 0);
+                
+            } catch (error) {
+                console.error('Submission Error:', error);
+                alert('An error occurred while submitting. Please try again or check your internet connection.');
+                
+                // Reset Button
