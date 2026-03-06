@@ -3,82 +3,365 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Media Department Recruitment | Student Council</title>
+    <title>Sechenov Media Recruitment</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-            color: white;
-            min-height: 100vh;
-            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            background-image: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
         }
-
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .input-glass {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
+        .form-input {
             transition: all 0.3s ease;
         }
-
-        .input-glass:focus {
-            background: rgba(0, 0, 0, 0.4);
-            border-color: #60a5fa;
-            outline: none;
-            box-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
+        .form-input:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
         }
-        
-        select option {
-            background-color: #1e293b;
+        /* Toast notification styling */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            min-width: 300px;
+            padding: 16px;
+            border-radius: 8px;
             color: white;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        .fade-in {
-            animation: fadeIn 0.8s ease-in forwards;
+        .toast.show {
+            transform: translateX(0);
         }
-
-        .slide-up {
-            animation: slideUp 0.8s ease-out forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .toast.error { background-color: #ef4444; }
+        .toast.success { background-color: #10b981; }
         
-        ::-webkit-scrollbar {
-            width: 8px;
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 3px solid white;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: none;
         }
-        ::-webkit-scrollbar-track {
-            background: #0f172a; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #3b82f6; 
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #60a5fa; 
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
-<body class="antialiased relative flex flex-col justify-between">
+<body class="min-h-screen flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
 
+    <!-- Toast Notifications Container -->
+    <div id="toast-container"></div>
+
+    <div class="max-w-2xl w-full bg-white rounded-2xl shadow-xl overflow-hidden">
+        
+        <!-- Header -->
+        <div class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 px-8 py-14 text-white text-center relative overflow-hidden border-b-4 border-blue-500">
+            <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
+            <div class="relative z-10 flex flex-col items-center justify-center">
+                <div class="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-inner border border-white/20">
+                    <i class="fas fa-university text-3xl text-blue-100"></i>
+                </div>
+                <h3 class="text-blue-200 text-xs sm:text-sm font-bold tracking-[0.25em] uppercase mb-2">Sechenov University</h3>
+                <h2 class="text-gray-300 text-sm sm:text-base font-medium tracking-widest mb-5">Student Council</h2>
+                <div class="h-px w-16 bg-blue-400/50 mb-5"></div>
+                <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white drop-shadow-md">Media Department</h1>
+            </div>
+        </div>
+
+        <!-- Form Section -->
+        <div id="form-container" class="p-8 sm:p-10">
+            <form id="recruitment-form" class="space-y-6">
+                
+                <!-- Full Name -->
+                <div>
+                    <label for="fullName" class="block text-sm font-semibold text-gray-700 mb-1">Full Name (in Russian) <span class="text-red-500">*</span></label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-user text-gray-400"></i>
+                        </div>
+                        <input type="text" id="fullName" name="fullName" class="form-input block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors" placeholder="e.g. Иванов Иван Иванович">
+                    </div>
+                </div>
+
+                <!-- Academic Specialty & Course Row -->
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div>
+                        <label for="specialty" class="block text-sm font-semibold text-gray-700 mb-1">Academic Specialty <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-graduation-cap text-gray-400"></i>
+                            </div>
+                            <input type="text" id="specialty" name="specialty" class="form-input block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors" placeholder="e.g. General Medicine / Dentistry">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="course" class="block text-sm font-semibold text-gray-700 mb-1">Course (Year of Study) <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-book-open text-gray-400"></i>
+                            </div>
+                            <select id="course" name="course" class="form-input block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors appearance-none bg-white">
+                                <option value="" disabled selected>Select your course...</option>
+                                <option value="1">1st Year</option>
+                                <option value="2">2nd Year</option>
+                                <option value="3">3rd Year</option>
+                                <option value="4">4th Year</option>
+                                <option value="5">5th Year</option>
+                                <option value="6">6th Year</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <i class="fas fa-chevron-down text-gray-400 text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Info Row -->
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div>
+                        <label for="telegram" class="block text-sm font-semibold text-gray-700 mb-1">Telegram ID <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fab fa-telegram-plane text-gray-400"></i>
+                            </div>
+                            <input type="text" id="telegram" name="telegram" class="form-input block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors" placeholder="e.g. @username">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="phone" class="block text-sm font-semibold text-gray-700 mb-1">Phone Number <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-phone text-gray-400"></i>
+                            </div>
+                            <input type="tel" id="phone" name="phone" class="form-input block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors" placeholder="e.g. +7 (999) 000-00-00">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experience -->
+                <div>
+                    <label for="experience" class="block text-sm font-semibold text-gray-700 mb-1">Prior Experience <span class="text-red-500">*</span></label>
+                    <div class="relative">
+                        <textarea id="experience" name="experience" rows="4" class="form-input block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none" placeholder="Briefly describe your previous experience in copywriting or presentations..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4">
+                    <button type="submit" id="submit-btn" class="w-full flex justify-center items-center gap-2 bg-gradient-to-r from-blue-800 to-slate-900 hover:from-blue-900 hover:to-black text-white font-bold py-4 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-800 transform hover:-translate-y-1">
+                        <span id="btn-text" class="tracking-wide uppercase text-sm">Submit Application</span>
+                        <div id="btn-loader" class="loader"></div>
+                        <i id="btn-icon" class="fas fa-paper-plane ml-1"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Success Message Container (Hidden by default) -->
+        <div id="success-container" class="hidden p-8 sm:p-12 text-center">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-check text-4xl text-green-500"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-3">Application Received!</h2>
+            <p class="text-gray-600 mb-6">Thank you for your interest in the Media Sector. We have successfully received your application and will contact you via Telegram soon.</p>
+        </div>
+
+    </div>
+
+    <!-- Footer Copyright -->
+    <div class="mt-8 text-center text-sm font-medium text-gray-500 tracking-wide">
+        Designed & Developed <br class="sm:hidden"> By AL TAMEEMI YASIR AMMAR
+    </div>
+
+    <script>
+        // ==========================================
+        // CONFIGURATION FOR GOOGLE FORMS
+        // ==========================================
+        // 1. Paste your Google Form action URL here
+        const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfY5klREnW85WAma7Tl8HCI_PfFe386OCWmUhFUlyJsCo76ZA/formResponse";
+        
+        // 2. Map your input fields to Google Form 'entry.XXXXX' IDs
+        const GOOGLE_ENTRY_IDS = {
+            fullName: "entry.284425668",   // Full Name
+            specialty: "entry.1865843971",  // Academic Specialty
+            course: "entry.1298899723",     // Course
+            telegram: "entry.1181463664",   // Telegram ID
+            phone: "entry.1076802313",      // Phone Number
+            experience: "entry.2121456031"  // Experience
+        };
+        // ==========================================
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById("recruitment-form");
+            const formContainer = document.getElementById("form-container");
+            const successContainer = document.getElementById("success-container");
+            
+            // UI Elements for button
+            const submitBtn = document.getElementById("submit-btn");
+            const btnText = document.getElementById("btn-text");
+            const btnLoader = document.getElementById("btn-loader");
+            const btnIcon = document.getElementById("btn-icon");
+
+            // Check if already submitted
+            if (localStorage.getItem("sechenov_media_submitted") === "true") {
+                formContainer.classList.add("hidden");
+                successContainer.classList.remove("hidden");
+                return;
+            }
+
+            // Toast Notification Function
+            function showToast(message, type = 'error') {
+                const toastContainer = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                
+                const icon = type === 'error' ? '<i class="fas fa-exclamation-circle"></i>' : '<i class="fas fa-check-circle"></i>';
+                toast.innerHTML = `${icon} <span>${message}</span>`;
+                
+                toastContainer.appendChild(toast);
+                
+                // Trigger animation
+                setTimeout(() => toast.classList.add('show'), 10);
+                
+                // Remove after 4 seconds
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, 4000);
+            }
+
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                // Get values
+                const fullName = document.getElementById("fullName").value.trim();
+                const specialty = document.getElementById("specialty").value.trim();
+                const course = document.getElementById("course").value;
+                const telegram = document.getElementById("telegram").value.trim();
+                const phone = document.getElementById("phone").value.trim();
+                const experience = document.getElementById("experience").value.trim();
+
+                // 1. Validation (All fields required)
+                if (!fullName) {
+                    showToast("Please enter your Full Name in Russian.");
+                    document.getElementById("fullName").focus();
+                    return;
+                }
+                // Basic Russian Cyrillic check (optional but helpful)
+                const cyrillicPattern = /^[а-яА-ЯёЁ\s]+$/;
+                if (!cyrillicPattern.test(fullName)) {
+                    showToast("Please use Russian letters for your Full Name.");
+                    document.getElementById("fullName").focus();
+                    return;
+                }
+
+                if (!specialty) {
+                    showToast("Please enter your Academic Specialty.");
+                    document.getElementById("specialty").focus();
+                    return;
+                }
+                if (!course) {
+                    showToast("Please select your Course (Year of study).");
+                    document.getElementById("course").focus();
+                    return;
+                }
+                if (!telegram) {
+                    showToast("Please enter your Telegram ID.");
+                    document.getElementById("telegram").focus();
+                    return;
+                }
+                if (!telegram.startsWith('@')) {
+                    showToast("Telegram ID should start with '@'.");
+                    document.getElementById("telegram").focus();
+                    return;
+                }
+                if (!phone) {
+                    showToast("Please enter your Phone Number.");
+                    document.getElementById("phone").focus();
+                    return;
+                }
+                if (!experience) {
+                    showToast("Please provide your experience or motivation.");
+                    document.getElementById("experience").focus();
+                    return;
+                }
+
+                // 2. Prepare submission
+                submitBtn.disabled = true;
+                btnText.textContent = "Submitting...";
+                btnLoader.style.display = "block";
+                btnIcon.style.display = "none";
+                submitBtn.classList.add("opacity-75", "cursor-not-allowed");
+
+                // Construct Form Data for Google Forms
+                const formData = new URLSearchParams();
+                formData.append(GOOGLE_ENTRY_IDS.fullName, fullName);
+                formData.append(GOOGLE_ENTRY_IDS.specialty, specialty);
+                formData.append(GOOGLE_ENTRY_IDS.course, course);
+                formData.append(GOOGLE_ENTRY_IDS.telegram, telegram);
+                formData.append(GOOGLE_ENTRY_IDS.phone, phone);
+                formData.append(GOOGLE_ENTRY_IDS.experience, experience);
+
+                try {
+                    // 3. Submit to Google Forms via fetch (no-cors)
+                    // Note: Since Google Forms doesn't return CORS headers for form submissions, 
+                    // we use 'no-cors' mode. The fetch will succeed, but response.ok will be false.
+                    await fetch(GOOGLE_FORM_URL, {
+                        method: "POST",
+                        mode: "no-cors",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        body: formData.toString()
+                    });
+
+                    // 4. Success Handling
+                    // Set local storage to prevent duplicate submissions
+                    localStorage.setItem("sechenov_media_submitted", "true");
+                    
+                    showToast("Application submitted successfully!", "success");
+                    
+                    // Hide form, show success message
+                    setTimeout(() => {
+                        formContainer.classList.add("hidden");
+                        successContainer.classList.remove("hidden");
+                    }, 500);
+
+                } catch (error) {
+                    // Handle network errors
+                    showToast("A network error occurred. Please try again later.");
+                    
+                    // Reset button
+                    submitBtn.disabled = false;
+                    btnText.textContent = "Submit Application";
+                    btnLoader.style.display = "none";
+                    btnIcon.style.display = "block";
+                    submitBtn.classList.remove("opacity-75", "cursor-not-allowed");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
     <div class="fixed top-[-10%] left-[-10%] w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-30 pointer-events-none"></div>
     <div class="fixed bottom-[-10%] right-[-10%] w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-30 pointer-events-none"></div>
 
